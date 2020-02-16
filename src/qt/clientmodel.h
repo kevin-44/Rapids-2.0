@@ -79,6 +79,10 @@ public:
     QString formatClientStartupTime() const;
     QString dataDir() const;
 
+    void setCacheNumBlocks(int blockNum) { cachedNumBlocks = blockNum; };
+    void setCacheReindexing(bool reindex) { cachedReindexing = reindex; };
+    void setCacheImporting(bool import) { cachedImporting = import; };
+
     bool getTorInfo(std::string& ip_port) const;
 
 private:
@@ -99,7 +103,7 @@ private:
     void subscribeToCoreSignals();
     void unsubscribeFromCoreSignals();
 
-signals:
+Q_SIGNALS:
     void numConnectionsChanged(int count);
     void numBlocksChanged(int count);
     void strMasternodesChanged(const QString& strMasternodes);
@@ -112,7 +116,7 @@ signals:
     // Show progress dialog e.g. for verifychain
     void showProgress(const QString& title, int nProgress);
 
-public slots:
+public Q_SLOTS:
     void updateTimer();
     void updateMnTimer();
     void updateNumConnections(int numConnections);

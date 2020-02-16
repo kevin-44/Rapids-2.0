@@ -763,17 +763,8 @@ class PivxTestFramework():
                 prevouts[outPoint.serialize_uniqueness()] = (outValue, prevScript, prevTime)
 
             else:
-                # get mint checkpoint
-                if nHeight == -1:
-                    nHeight = rpc_conn.getblockcount()
-                checkpointBlock = rpc_conn.getblock(rpc_conn.getblockhash(nHeight), True)
-                checkpoint = int(checkpointBlock['acc_checkpoint'], 16)
-                # parse checksum and get checksumblock time
-                pos = vZC_DENOMS.index(utxo['denomination'])
-                checksum = (checkpoint >> (32 * (len(vZC_DENOMS) - 1 - pos))) & 0xFFFFFFFF
-                prevTime = rpc_conn.getchecksumblock(hex(checksum), utxo['denomination'], True)['time']
                 uniqueness = bytes.fromhex(utxo['hash stake'])[::-1]
-                prevouts[uniqueness] = (int(utxo["denomination"]) * COIN, utxo["serial hash"], prevTime)
+                prevouts[uniqueness] = (int(utxo["denomination"]) * COIN, utxo["serial hash"], 0)
 
         return prevouts
 
@@ -815,6 +806,7 @@ class PivxTestFramework():
     def stake_block(self, node_id,
             nHeight,
             prevHhash,
+            prevModifier,
             stakeableUtxos,
             startTime=None,
             privKeyWIF=None,
@@ -824,6 +816,7 @@ class PivxTestFramework():
         :param   node_id:           (int) index of the CTestNode used as rpc connection. Must own stakeableUtxos.
                  nHeight:           (int) height of the block being produced
                  prevHash:          (string) hex string of the previous block hash
+                 prevModifier       (string) hex string of the previous block stake modifier
                  stakeableUtxos:    ({bytes --> (int, bytes, int)} dictionary)
                                     maps CStake "uniqueness" (i.e. serialized COutPoint -or hash stake, for zpiv-)
                                     to (amount, prevScript, timeBlockFrom).
@@ -849,19 +842,14 @@ class PivxTestFramework():
         block = create_block(int(prevHhash, 16), coinbaseTx, nTime)
 
         # Find valid kernel hash - iterates stakeableUtxos, then block.nTime
-        block.solve_stake(stakeableUtxos)
+        block.solve_stake(stakeableUtxos, int(prevModifier, 16))
 
         # Check if this is a zPoS block or regular/cold stake - sign stake tx
         block_sig_key = CECKey()
-        prevout = None
         isZPoS = is_zerocoin(block.prevoutStake)
         if isZPoS:
-            _, serialHash, _ = stakeableUtxos[block.prevoutStake]
-            raw_stake = rpc_conn.createrawzerocoinstake(serialHash)
-            stake_tx_signed_raw_hex = raw_stake["hex"]
-            stake_pkey = raw_stake["private-key"]
-            block_sig_key.set_compressed(True)
-            block_sig_key.set_secretbytes(bytes.fromhex(stake_pkey))
+            # !TODO: remove me
+            raise Exception("zPOS tests discontinued")
 
         else:
             coinstakeTx_unsigned = CTransaction()
@@ -928,7 +916,16 @@ class PivxTestFramework():
         assert_greater_than(len(self.nodes), node_id)
         nHeight = self.nodes[node_id].getblockcount()
         prevHhash = self.nodes[node_id].getblockhash(nHeight)
-        return self.stake_block(node_id, nHeight+1, prevHhash, stakeableUtxos, btime, privKeyWIF, vtx, fDoubleSpend)
+        prevModifier = self.nodes[node_id].getblock(prevHhash)['stakeModifier']
+        return self.stake_block(node_id,
+                                nHeight+1,
+                                prevHhash,
+                                prevModifier,
+                                stakeableUtxos,
+                                btime,
+                                privKeyWIF,
+                                vtx,
+                                fDoubleSpend)
 
 
     def check_tx_in_chain(self, node_id, txid):

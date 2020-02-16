@@ -92,7 +92,6 @@ public:
     int FutureBlockTimeDrift(const int nHeight) const;
     bool IsValidBlockTimeStamp(const int64_t nTime, const int nHeight) const;
 
-    CAmount MaxMoneyOut() const { return nMaxMoneyOut; }
     /** The masternode count that we will allow the see-saw reward payments to be off by */
     int MasternodeCountDrift() const { return nMasternodeCountDrift; }
     /** Make miner stop after a block is found. In RPC, don't return until nGenProcLimit blocks are generated */
@@ -195,7 +194,6 @@ protected:
     int nTimeSlotLength;
 
     int nModifierUpdateBlock;
-    CAmount nMaxMoneyOut;
     int nMinerThreads;
     std::vector<CDNSSeedData> vSeeds;
     std::vector<unsigned char> base58Prefixes[MAX_BASE58_TYPES];
@@ -257,26 +255,6 @@ protected:
 };
 
 /**
- * Modifiable parameters interface is used by test cases to adapt the parameters in order
- * to test specific features more easily. Test cases should always restore the previous
- * values after finalization.
- */
-
-class CModifiableParams
-{
-public:
-    //! Published setters to allow changing values in unit test cases
-    virtual void setSubsidyHalvingInterval(int anSubsidyHalvingInterval) = 0;
-    virtual void setEnforceBlockUpgradeMajority(int anEnforceBlockUpgradeMajority) = 0;
-    virtual void setRejectBlockOutdatedMajority(int anRejectBlockOutdatedMajority) = 0;
-    virtual void setToCheckBlockUpgradeMajority(int anToCheckBlockUpgradeMajority) = 0;
-    virtual void setDefaultConsistencyChecks(bool aDefaultConsistencyChecks) = 0;
-    virtual void setAllowMinDifficultyBlocks(bool aAllowMinDifficultyBlocks) = 0;
-    virtual void setSkipProofOfWorkCheck(bool aSkipProofOfWorkCheck) = 0;
-};
-
-
-/**
  * Return the currently selected parameters. This won't change after app startup
  * outside of the unit tests.
  */
@@ -284,9 +262,6 @@ const CChainParams& Params();
 
 /** Return parameters for the given network. */
 CChainParams& Params(CBaseChainParams::Network network);
-
-/** Get modifiable network parameters (UNITTEST only) */
-CModifiableParams* ModifiableParams();
 
 /** Sets the params returned by Params() to those for the given network. */
 void SelectParams(CBaseChainParams::Network network);

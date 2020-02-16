@@ -143,8 +143,6 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"mintzerocoin", 0},
         {"mintzerocoin", 1},
         {"spendzerocoin", 0},
-        {"spendzerocoin", 1},
-        {"spendzerocoin", 2},
         {"spendrawzerocoin", 2},
         {"spendzerocoinmints", 0},
         {"importzerocoins", 0},
@@ -157,8 +155,6 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"searchdzpiv", 0},
         {"searchdzpiv", 1},
         {"searchdzpiv", 2},
-        {"getaccumulatorvalues", 0},
-        {"getaccumulatorwitness",2},
         {"getmintsvalues", 2},
         {"enableautomintaddress", 0},
         {"getblockindexstats", 0},
@@ -171,8 +167,6 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"getserials", 1},
         {"getserials", 2},
         {"getfeeinfo", 0},
-        {"getchecksumblock", 1},
-        {"getchecksumblock", 2},
     };
 
 class CRPCConvertTable

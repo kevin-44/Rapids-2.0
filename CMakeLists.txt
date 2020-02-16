@@ -352,11 +352,13 @@ set(WALLET_SOURCES
         ./src/wallet/rpcwallet.cpp
         ./src/kernel.cpp
         ./src/wallet/wallet.cpp
+        ./src/wallet/wallet_zerocoin.cpp
         ./src/wallet/wallet_ismine.cpp
         ./src/wallet/walletdb.cpp
         ./src/zpiv/zpivwallet.cpp
         ./src/zpiv/zpivtracker.cpp
         ./src/zpiv/zpivmodule.cpp
+        ./src/zpiv/zpos.cpp
         ./src/stakeinput.cpp
         )
 add_library(WALLET_A STATIC ${BitcoinHeaders} ${WALLET_SOURCES})
@@ -408,7 +410,6 @@ target_include_directories(BITCOIN_CRYPTO_A PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/s
 
 set(ZEROCOIN_SOURCES
         ./src/libzerocoin/Accumulator.h
-        ./src/libzerocoin/AccumulatorProofOfKnowledge.h
         ./src/libzerocoin/bignum.h
         ./src/libzerocoin/bignum.cpp
         ./src/libzerocoin/Coin.h
@@ -418,19 +419,15 @@ set(ZEROCOIN_SOURCES
         ./src/libzerocoin/Denominations.h
         ./src/libzerocoin/ParamGeneration.h
         ./src/libzerocoin/Params.h
-        ./src/libzerocoin/SerialNumberSignatureOfKnowledge.h
         ./src/libzerocoin/SpendType.h
         ./src/libzerocoin/ZerocoinDefines.h
         ./src/libzerocoin/Accumulator.cpp
-        ./src/libzerocoin/AccumulatorProofOfKnowledge.cpp
         ./src/libzerocoin/Coin.cpp
         ./src/libzerocoin/CoinRandomnessSchnorrSignature.cpp
         ./src/libzerocoin/Denominations.cpp
         ./src/libzerocoin/CoinSpend.cpp
-        ./src/libzerocoin/Commitment.cpp
         ./src/libzerocoin/ParamGeneration.cpp
         ./src/libzerocoin/Params.cpp
-        ./src/libzerocoin/SerialNumberSignatureOfKnowledge.cpp
         )
 if(GMP_FOUND)
     list(APPEND ZEROCOIN_SOURCES ./src/libzerocoin/bignum_gmp.cpp)
@@ -443,10 +440,6 @@ target_include_directories(ZEROCOIN_A PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
         )
 
 set(COMMON_SOURCES
-        ./src/zpiv/accumulators.cpp
-        ./src/zpiv/accumulatorcheckpoints.cpp
-        ./src/zpiv/accumulatormap.cpp
-        ./src/zpiv/witness.cpp
         ./src/allocators.cpp
         ./src/amount.cpp
         ./src/base58.cpp
@@ -455,6 +448,7 @@ set(COMMON_SOURCES
         ./src/coins.cpp
         ./src/compressor.cpp
         ./src/consensus/merkle.cpp
+        ./src/consensus/tx_verify.cpp
         ./src/primitives/block.cpp
         ./src/zpiv/deterministicmint.cpp
         ./src/primitives/transaction.cpp

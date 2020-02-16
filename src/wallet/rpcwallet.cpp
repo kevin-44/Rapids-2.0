@@ -3440,20 +3440,16 @@ UniValue mintzerocoin(const UniValue& params, bool fHelp)
 
 UniValue spendzerocoin(const UniValue& params, bool fHelp)
 {
-    if (fHelp || params.size() > 5 || params.size() < 3)
+    if (fHelp || params.size() > 2 || params.size() < 1)
         throw std::runtime_error(
-            "spendzerocoin amount mintchange minimizechange ( \"address\" isPublicSpend)\n"
+            "spendzerocoin amount ( \"address\" )\n"
             "\nSpend zPIV to a PIV address.\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nArguments:\n"
             "1. amount          (numeric, required) Amount to spend.\n"
-            "2. mintchange      (boolean, required) Re-mint any leftover change.\n"
-            "3. minimizechange  (boolean, required) Try to minimize the returning change  [false]\n"
-            "4. \"address\"     (string, optional, default=change) Send to specified address or to a new change address.\n"
+            "2. \"address\"     (string, optional, default=change) Send to specified address or to a new change address.\n"
             "                       If there is change then an address is required\n"
-            "5. isPublicSpend   (boolean, optional, default=true) create a public zc spend."
-            "                       If false, instead create spend version 2 (only for regression tests)"
 
             "\nResult:\n"
             "{\n"
@@ -3479,8 +3475,8 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp)
             "}\n"
 
             "\nExamples\n" +
-            HelpExampleCli("spendzerocoin", "5000 false true \"DMJRSsuU9zfyrvxVaAEFQqK4MxZg6vgeS6\"") +
-            HelpExampleRpc("spendzerocoin", "5000 false true \"DMJRSsuU9zfyrvxVaAEFQqK4MxZg6vgeS6\""));
+            HelpExampleCli("spendzerocoin", "5000 \"DMJRSsuU9zfyrvxVaAEFQqK4MxZg6vgeS6\"") +
+            HelpExampleRpc("spendzerocoin", "5000 \"DMJRSsuU9zfyrvxVaAEFQqK4MxZg6vgeS6\""));
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
@@ -3488,37 +3484,24 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_WALLET_ERROR, "zPIV is currently disabled due to maintenance.");
 
     CAmount nAmount = AmountFromValue(params[0]);        // Spending amount
-    const bool fMintChange = params[1].get_bool();       // Mint change to zPIV
-    const bool fMinimizeChange = params[2].get_bool();    // Minimize change
-    const std::string address_str = (params.size() > 3 ? params[3].get_str() : "");
-    const bool isPublicSpend = (params.size() > 4 ? params[4].get_bool() : true);
-
-    if (!Params().IsRegTestNet()) {
-        if (fMintChange)
-            throw JSONRPCError(RPC_WALLET_ERROR, "zPIV minting is DISABLED (except for regtest), cannot mint change");
-
-        if (!isPublicSpend)
-            throw JSONRPCError(RPC_WALLET_ERROR, "zPIV old spend only available in regtest for tests purposes");
-    }
+    const std::string address_str = (params.size() > 1 ? params[1].get_str() : "");
 
     std::vector<CZerocoinMint> vMintsSelected;
-    return DoZpivSpend(nAmount, fMintChange, fMinimizeChange, vMintsSelected, address_str, isPublicSpend);
+    return DoZpivSpend(nAmount, vMintsSelected, address_str);
 }
 
 
 UniValue spendzerocoinmints(const UniValue& params, bool fHelp)
 {
-    if (fHelp || params.size() < 1 || params.size() > 3)
+    if (fHelp || params.size() < 1 || params.size() > 2)
         throw std::runtime_error(
-            "spendzerocoinmints mints_list (\"address\" isPublicSpend) \n"
+            "spendzerocoinmints mints_list ( \"address\" ) \n"
             "\nSpend zPIV mints to a PIV address.\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nArguments:\n"
             "1. mints_list     (string, required) A json array of zerocoin mints serial hashes\n"
             "2. \"address\"     (string, optional, default=change) Send to specified address or to a new change address.\n"
-            "3. isPublicSpend  (boolean, optional, default=true) create a public zc spend."
-            "                       If false, instead create spend version 2 (only for regression tests)"
 
             "\nResult:\n"
             "{\n"
@@ -3554,14 +3537,9 @@ UniValue spendzerocoinmints(const UniValue& params, bool fHelp)
 
     UniValue arrMints = params[0].get_array();
     const std::string address_str = (params.size() > 1 ? params[1].get_str() : "");
-    const bool isPublicSpend = (params.size() > 2 ? params[2].get_bool() : true);
 
     if (arrMints.size() == 0)
         throw JSONRPCError(RPC_WALLET_ERROR, "No zerocoin selected");
-
-    if (!isPublicSpend && !Params().IsRegTestNet()) {
-        throw JSONRPCError(RPC_WALLET_ERROR, "zPIV old spend only available in regtest for tests purposes");
-    }
 
     // check mints supplied and save serial hash (do this here so we don't fetch if any is wrong)
     std::vector<uint256> vSerialHashes;
@@ -3585,21 +3563,12 @@ UniValue spendzerocoinmints(const UniValue& params, bool fHelp)
         nAmount += mint.GetDenominationAsAmount();
     }
 
-    return DoZpivSpend(nAmount, false, true, vMintsSelected, address_str, isPublicSpend);
+    return DoZpivSpend(nAmount, vMintsSelected, address_str);
 }
 
 
-extern UniValue DoZpivSpend(const CAmount nAmount, bool fMintChange, bool fMinimizeChange, std::vector<CZerocoinMint>& vMintsSelected, std::string address_str, bool isPublicSpend)
+extern UniValue DoZpivSpend(const CAmount nAmount, std::vector<CZerocoinMint>& vMintsSelected, std::string address_str)
 {
-    // zerocoin mint / v2 spend is disabled. fMintChange/isPublicSpend should be false here. Double check
-    if (!Params().IsRegTestNet()) {
-        if (fMintChange)
-            throw JSONRPCError(RPC_WALLET_ERROR, "zPIV minting is DISABLED (except for regtest), cannot mint change");
-
-        if (!isPublicSpend)
-            throw JSONRPCError(RPC_WALLET_ERROR, "zPIV old spend only available in regtest for tests purposes");
-    }
-
     int64_t nTimeStart = GetTimeMillis();
     CBitcoinAddress address = CBitcoinAddress(); // Optional sending address. Dummy initialization here.
     CWalletTx wtx;
@@ -3615,7 +3584,7 @@ extern UniValue DoZpivSpend(const CAmount nAmount, bool fMintChange, bool fMinim
     }
 
     EnsureWalletIsUnlocked();
-    fSuccess = pwalletMain->SpendZerocoin(nAmount, wtx, receipt, vMintsSelected, fMintChange, fMinimizeChange, outputs, nullptr, isPublicSpend);
+    fSuccess = pwalletMain->SpendZerocoin(nAmount, wtx, receipt, vMintsSelected, outputs, nullptr);
 
     if (!fSuccess)
         throw JSONRPCError(RPC_WALLET_ERROR, receipt.GetStatusMessage());
@@ -4273,9 +4242,9 @@ UniValue searchdzpiv(const UniValue& params, bool fHelp)
 
 UniValue spendrawzerocoin(const UniValue& params, bool fHelp)
 {
-    if (fHelp || params.size() < 4 || params.size() > 7)
+    if (fHelp || params.size() < 4 || params.size() > 6)
         throw std::runtime_error(
-            "spendrawzerocoin \"serialHex\" denom \"randomnessHex\" \"priv key\" ( \"address\" \"mintTxId\" isPublicSpend)\n"
+            "spendrawzerocoin \"serialHex\" denom \"randomnessHex\" \"priv key\" ( \"address\" \"mintTxId\" )\n"
             "\nCreate and broadcast a TX spending the provided zericoin.\n"
 
             "\nArguments:\n"
@@ -4287,8 +4256,6 @@ UniValue spendrawzerocoin(const UniValue& params, bool fHelp)
             "                        or empty string, spend to change address.\n"
             "6. \"mintTxId\"         (string, optional) txid of the transaction containing the mint. If not"
             "                        specified, or empty string, the blockchain will be scanned (could take a while)"
-            "7. isPublicSpend        (boolean, optional, default=true) create a public zc spend."
-            "                        If false, instead create spend version 2 (only for regression tests)"
 
             "\nResult:\n"
                 "\"txid\"             (string) The transaction txid in hex\n"
@@ -4296,10 +4263,6 @@ UniValue spendrawzerocoin(const UniValue& params, bool fHelp)
             "\nExamples\n" +
             HelpExampleCli("spendrawzerocoin", "\"f80892e78c30a393ef4ab4d5a9d5a2989de6ebc7b976b241948c7f489ad716a2\" \"a4fd4d7248e6a51f1d877ddd2a4965996154acc6b8de5aa6c83d4775b283b600\" 100 \"xxx\"") +
             HelpExampleRpc("spendrawzerocoin", "\"f80892e78c30a393ef4ab4d5a9d5a2989de6ebc7b976b241948c7f489ad716a2\", \"a4fd4d7248e6a51f1d877ddd2a4965996154acc6b8de5aa6c83d4775b283b600\", 100, \"xxx\""));
-
-    const bool isPublicSpend = (params.size() > 6 ? params[6].get_bool() : true);
-    if (!Params().IsRegTestNet() && !isPublicSpend)
-        throw JSONRPCError(RPC_WALLET_ERROR, "zPIV old spend only available in regtest for tests purposes");
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
@@ -4370,6 +4333,6 @@ UniValue spendrawzerocoin(const UniValue& params, bool fHelp)
     }
 
     std::vector<CZerocoinMint> vMintsSelected = {mint};
-    return DoZpivSpend(mint.GetDenominationAsAmount(), false, true, vMintsSelected, address_str, isPublicSpend);
+    return DoZpivSpend(mint.GetDenominationAsAmount(), vMintsSelected, address_str);
 }
 
