@@ -1762,6 +1762,10 @@ double ConvertBitsToDouble(unsigned int nBits)
     return dDiff;
 }
 
+bool IsBurnBlock(int height);
+
+int64_t GetBurnAward(int height);
+
 int64_t GetBlockValue(int nHeight)
 {
     if (Params().NetworkID() == CBaseChainParams::TESTNET) {
@@ -1776,39 +1780,55 @@ int64_t GetBlockValue(int nHeight)
     }
 
     int64_t nSubsidy = 0;
-    if (nHeight == 0) {
-        nSubsidy = 60001 * COIN;
-    } else if (nHeight < 86400 && nHeight > 0) {
-        nSubsidy = 250 * COIN;
-    } else if (nHeight < (Params().NetworkID() == CBaseChainParams::TESTNET ? 145000 : 151200) && nHeight >= 86400) {
-        nSubsidy = 225 * COIN;
-    } else if (nHeight <= Params().LAST_POW_BLOCK() && nHeight >= 151200) {
-        nSubsidy = 45 * COIN;
-    } else if (nHeight <= 302399 && nHeight > Params().LAST_POW_BLOCK()) {
-        nSubsidy = 45 * COIN;
-    } else if (nHeight <= 345599 && nHeight >= 302400) {
-        nSubsidy = 40.5 * COIN;
-    } else if (nHeight <= 388799 && nHeight >= 345600) {
-        nSubsidy = 36 * COIN;
-    } else if (nHeight <= 431999 && nHeight >= 388800) {
-        nSubsidy = 31.5 * COIN;
-    } else if (nHeight <= 475199 && nHeight >= 432000) {
-        nSubsidy = 27 * COIN;
-    } else if (nHeight <= 518399 && nHeight >= 475200) {
-        nSubsidy = 22.5 * COIN;
-    } else if (nHeight <= 561599 && nHeight >= 518400) {
-        nSubsidy = 18 * COIN;
-    } else if (nHeight <= 604799 && nHeight >= 561600) {
-        nSubsidy = 13.5 * COIN;
-    } else if (nHeight <= 647999 && nHeight >= 604800) {
-        nSubsidy = 9 * COIN;
-    } else if (nHeight < Params().Zerocoin_Block_V2_Start()) {
-        nSubsidy = 4.5 * COIN;
+
+    if(IsBurnBlock(nHeight)) {
+        nSubsidy = GetBurnAward(nHeight);
     } else {
-        nSubsidy = 5 * COIN;
+        if (nHeight == 0) {
+            nSubsidy = 20000000000 * COIN;
+        } else if (nHeight < 2102401 && nHeight > 1) {
+            nSubsidy = 3567.352 * COIN;
+        } else if (nHeight <= 4204801 && nHeight >= 2102402 ) {
+            nSubsidy = 1783.676 * COIN;
+        } else if (nHeight <= 6307201 && nHeight >= 4204802) {
+            nSubsidy = 891.838 * COIN;
+        } else if (nHeight <= 8409601 && nHeight >= 6307202) {
+            nSubsidy = 445.919  * COIN;
+        } else if (nHeight <= 10512001 && nHeight >= 8409602) {
+            nSubsidy = 222.959 * COIN;
+        } else if (nHeight >= 10512002) {
+            nSubsidy = 111.480 * COIN;
+        }
     }
+
     return nSubsidy;
 }
+
+int64_t GetBurnAward(int nHeight) {
+    int64_t nSubsidy = 0;
+
+    if(IsBurnBlock(nHeight)) {
+        nSubsidy = 43200 * GetBlockValue(nHeight) * 0.1 + GetBlockValue(nHeight) * 0.3;
+        return nSubsidy;
+
+    }else
+        return 0;
+}
+
+int nStartBurnBlock = 43199;
+int nBurnBlockStep = 43200;
+bool IsBurnBlock(int nHeight) {
+    if(nHeight < nStartBurnBlock)
+        return false;
+    else if( (nHeight-nStartBurnBlock) % nBurnBlockStep == 0)
+        return true;
+    else
+        return false;
+}
+
+
+
+
 
 CAmount GetSeeSaw(const CAmount& blockValue, int nMasternodeCount, int nHeight)
 {
@@ -2054,24 +2074,34 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
             return 0;
     }
 
-    if (nHeight <= 43200) {
-        ret = blockValue / 5;
-    } else if (nHeight < 86400 && nHeight > 43200) {
-        ret = blockValue / (100 / 30);
-    } else if (nHeight < (Params().NetworkID() == CBaseChainParams::TESTNET ? 145000 : 151200) && nHeight >= 86400) {
-        ret = 50 * COIN;
-    } else if (nHeight <= Params().LAST_POW_BLOCK() && nHeight >= 151200) {
-        ret = blockValue / 2;
-    } else if (nHeight < Params().Zerocoin_Block_V2_Start()) {
-        return GetSeeSaw(blockValue, nMasternodeCount, nHeight);
+    if (nHeight < Params().LAST_POW_BLOCK() || blockValue == 0)
+        return 0;
+
+    if (nHeight < 50) {
+        ret = 0;
     } else {
-        //When zPIV is staked, masternode only gets 2 PIV
-        ret = 3 * COIN;
-        if (isZPIVStake)
-            ret = 2 * COIN;
+        ret = blockValue * 0.65 / 0.9; // 60% of block reward
     }
 
     return ret;
+//    if (nHeight <= 43200) {
+//        ret = blockValue / 5;
+//    } else if (nHeight < 86400 && nHeight > 43200) {
+//        ret = blockValue / (100 / 30);
+//    } else if (nHeight < (Params().NetworkID() == CBaseChainParams::TESTNET ? 145000 : 151200) && nHeight >= 86400) {
+//        ret = 50 * COIN;
+//    } else if (nHeight <= Params().LAST_POW_BLOCK() && nHeight >= 151200) {
+//        ret = blockValue / 2;
+//    } else if (nHeight < Params().Zerocoin_Block_V2_Start()) {
+//        return GetSeeSaw(blockValue, nMasternodeCount, nHeight);
+//    } else {
+//        //When zPIV is staked, masternode only gets 2 PIV
+//        ret = 3 * COIN;
+//        if (isZPIVStake)
+//            ret = 2 * COIN;
+//    }
+//
+//    return ret;
 }
 
 bool IsInitialBlockDownload()
