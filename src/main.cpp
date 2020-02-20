@@ -1762,9 +1762,6 @@ double ConvertBitsToDouble(unsigned int nBits)
     return dDiff;
 }
 
-bool IsBurnBlock(int height);
-
-int64_t GetBurnAward(int height);
 
 int64_t GetBlockValue(int nHeight)
 {
@@ -1781,9 +1778,7 @@ int64_t GetBlockValue(int nHeight)
 
     int64_t nSubsidy = 0;
 
-    if(IsBurnBlock(nHeight)) {
-        nSubsidy = GetBurnAward(nHeight);
-    } else {
+
         if (nHeight == 0) {
             nSubsidy = 20000000000 * COIN;
         } else if (nHeight < 2102401 && nHeight > 1) {
@@ -1799,35 +1794,10 @@ int64_t GetBlockValue(int nHeight)
         } else if (nHeight >= 10512002) {
             nSubsidy = 111.480 * COIN;
         }
-    }
+
 
     return nSubsidy;
 }
-
-int64_t GetBurnAward(int nHeight) {
-    int64_t nSubsidy = 0;
-
-    if(IsBurnBlock(nHeight)) {
-        nSubsidy = 43200 * GetBlockValue(nHeight) * 0.1 + GetBlockValue(nHeight) * 0.3;
-        return nSubsidy;
-
-    }else
-        return 0;
-}
-
-int nStartBurnBlock = 43199;
-int nBurnBlockStep = 43200;
-bool IsBurnBlock(int nHeight) {
-    if(nHeight < nStartBurnBlock)
-        return false;
-    else if( (nHeight-nStartBurnBlock) % nBurnBlockStep == 0)
-        return true;
-    else
-        return false;
-}
-
-
-
 
 
 CAmount GetSeeSaw(const CAmount& blockValue, int nMasternodeCount, int nHeight)
@@ -2080,7 +2050,7 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
     if (nHeight < 50) {
         ret = 0;
     } else {
-        ret = blockValue * 0.65 / 0.9; // 60% of block reward
+        ret = blockValue * 0.65 / 0.9; // 65% of block reward
     }
 
     return ret;
