@@ -514,7 +514,7 @@ link_directories(
         ${CMAKE_SOURCE_DIR}/src/secp256k1/.libs
         )
 
-set(pivx-cli_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/rapids-cli.cpp)
+set(rapids-cli_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/rapids-cli.cpp)
 if($ENV{target} MATCHES "Windows")
     list(APPEND rapids-cli_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/rapids-cli-res.rc)
 endif()

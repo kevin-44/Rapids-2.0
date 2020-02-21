@@ -303,11 +303,11 @@ public:
     {
         networkID = CBaseChainParams::TESTNET;
         strNetworkID = "test";
-        pchMessageStart[0] = 0x33;
-        pchMessageStart[1] = 0x8a;
-        pchMessageStart[2] = 0xe5;
-        pchMessageStart[3] = 0xa8;
-        vAlertPubKey = ParseHex("04ba89975265af1d4c6295d3587eb4a0e4b758bde1621ef2ab8f92b98e7ed1c85547c9b7a3f145a66aa2abb91db5c13295828e77d823ea6d9b4bb89912425e1efe");
+        pchMessageStart[0] = 0x61;
+        pchMessageStart[1] = 0xa2;
+        pchMessageStart[2] = 0xf5;
+        pchMessageStart[3] = 0xcb;
+        vAlertPubKey = ParseHex("0464d06adc43d304a55e40e780f0356ce9ce51756610a1c1500efa5df48a9540359ca702c61e8be8e6df47f8ef0bd0ea6ef33a4f5de65f5e22d5b083892dd69530");
         nDefaultPort = 19333;
         nEnforceBlockUpgradeMajority = 51; // 75%
         nRejectBlockOutdatedMajority = 75; // 95%
@@ -359,20 +359,19 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "pivx-testnet.seed.fuzzbawls.pw"));
-        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "pivx-testnet.seed2.fuzzbawls.pw"));
-        vSeeds.push_back(CDNSSeedData("warrows.dev", "testnet.dnsseed.pivx.warrows.dev"));
+//        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "pivx-testnet.seed.fuzzbawls.pw"));
+//        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "pivx-testnet.seed2.fuzzbawls.pw"));
+//        vSeeds.push_back(CDNSSeedData("warrows.dev", "testnet.dnsseed.pivx.warrows.dev"));
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 139); // Testnet pivx addresses start with 'x' or 'y'
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 19);  // Testnet pivx script addresses start with '8' or '9'
-        base58Prefixes[STAKING_ADDRESS] = std::vector<unsigned char>(1, 73);     // starting with 'W'
-        base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 239);     // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
-        // Testnet pivx BIP32 pubkeys start with 'DRKV'
-        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x3a)(0x80)(0x61)(0xa0).convert_to_container<std::vector<unsigned char> >();
-        // Testnet pivx BIP32 prvkeys start with 'DRKP'
-        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x3a)(0x80)(0x58)(0x37).convert_to_container<std::vector<unsigned char> >();
-        // Testnet pivx BIP44 coin type is '1' (All coin's testnet default)
-        base58Prefixes[EXT_COIN_TYPE] = boost::assign::list_of(0x80)(0x00)(0x00)(0x01).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 61);
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 6);
+        base58Prefixes[STAKING_ADDRESS] = std::vector<unsigned char>(1, 63);     // starting with 'S'
+        base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 46);
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >();
+        // BIP44 coin type is from https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+        base58Prefixes[EXT_COIN_TYPE] = boost::assign::list_of(0x80)(0x00)(0x00)(0xde).convert_to_container<std::vector<unsigned char> >();
+
 
         convertSeed6(vFixedSeeds, pnSeed6_test, ARRAYLEN(pnSeed6_test));
 
@@ -385,9 +384,9 @@ public:
 
         nPoolMaxTransactions = 2;
         nBudgetCycleBlocks = 144; //!< Ten cycles per day on testnet
-        strSporkPubKey = "04E88BB455E2A04E65FCC41D88CD367E9CCE1F5A409BE94D8C2B4B35D223DED9C8E2F4E061349BA3A38839282508066B6DC4DB72DD432AC4067991E6BF20176127";
-        strSporkPubKeyOld = "04A8B319388C0F8588D238B9941DC26B26D3F9465266B368A051C5C100F79306A557780101FE2192FE170D7E6DEFDCBEE4C8D533396389C0DAFFDBC842B002243C";
-        strObfuscationPoolDummyAddress = "y57cqfGRkekRyDRNeJiLtYVEbvhXrNbmox";
+        strSporkPubKey = "04232761d6403206eee2e230eff432db29414364d5837ac94c8ec4450c2b191b275ad4a48f3cdde7eb9c0477777550c50a20980fd32798e7dee04483244a7b5027";
+        strSporkPubKeyOld = "0499A7AF4806FC6DE640D23BC5936C29B77ADF2174B4F45492727F897AE63CF8D27B2F05040606E0D14B547916379FA10716E344E745F880EDC037307186AA25B7";
+        strObfuscationPoolDummyAddress = "RstYW5FygzLA3RyaSZENjY323fg1CxjsXm";
         nStartMasternodePayments = 1420837558; //Fri, 09 Jan 2015 21:05:58 GMT
         nBudget_Fee_Confirmations = 3; // Number of confirmations for the finalization fee. We have to make this very short
                                        // here because we only have a 8 block finalization window on testnet

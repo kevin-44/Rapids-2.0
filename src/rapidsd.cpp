@@ -67,13 +67,13 @@ bool AppInit(int argc, char* argv[])
 
     // Process help and version before taking care about datadir
     if (mapArgs.count("-?") || mapArgs.count("-help") || mapArgs.count("-version")) {
-        std::string strUsage = _("Pivx Core Daemon") + " " + _("version") + " " + FormatFullVersion() + "\n";
+        std::string strUsage = _("Rapids Core Daemon") + " " + _("version") + " " + FormatFullVersion() + "\n";
 
         if (mapArgs.count("-version")) {
             strUsage += LicenseInfo();
         } else {
             strUsage += "\n" + _("Usage:") + "\n" +
-                        "  pivxd [options]                     " + _("Start Pivx Core Daemon") + "\n";
+                        "  rapidsd [options]                     " + _("Start Rapids Core Daemon") + "\n";
 
             strUsage += "\n" + HelpMessage(HMM_BITCOIND);
         }
@@ -113,13 +113,13 @@ bool AppInit(int argc, char* argv[])
                 fCommandLine = true;
 
         if (fCommandLine) {
-            fprintf(stderr, "Error: There is no RPC client functionality in pivxd anymore. Use the pivx-cli utility instead.\n");
+            fprintf(stderr, "Error: There is no RPC client functionality in rapidsd anymore. Use the rapids-cli utility instead.\n");
             exit(1);
         }
 #ifndef WIN32
         fDaemon = GetBoolArg("-daemon", false);
         if (fDaemon) {
-            fprintf(stdout, "PIVX server starting\n");
+            fprintf(stdout, "Rapids server starting\n");
 
             // Daemonize
             pid_t pid = fork();
