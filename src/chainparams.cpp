@@ -53,7 +53,7 @@ static void convertSeed6(std::vector<CAddress>& vSeedsOut, const SeedSpec6* data
 // + Contains no strange transactions
 static Checkpoints::MapCheckpoints mapCheckpoints =
     boost::assign::map_list_of
-    (0, uint256("0x00000d628fa6a8e91fe47554fa6ba00c7aa535fccd430b22214a71f9b7b344a7"));
+    (0, uint256("0x001"));
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
     1542153600, // * UNIX timestamp of last checkpoint block
@@ -227,12 +227,10 @@ public:
         genesis.nVersion = 1;
         genesis.nTime = 1582697507;
         genesis.nBits = 0x1e0ffff0;
-        genesis.nNonce = 2465608;
+        genesis.nNonce = 2508318;
 
         hashGenesisBlock = genesis.GetHash();
-        strprintf("HashGEN", hashGenesisBlock);
-        strprintf("Gen", genesis.hashMerkleRoot);
-        assert(hashGenesisBlock == uint256("0x00000d628fa6a8e91fe47554fa6ba00c7aa535fccd430b22214a71f9b7b344a7"));
+        assert(hashGenesisBlock == uint256("0x00000f2465e8625d2c7546b78edbec292663ab2ff0003d39505e0d1d9ac62e79"));
         assert(genesis.hashMerkleRoot == uint256("0xb8ac00f6c7839f841a053c5f63e81015d631b81cc633692aab3858021fb9cab3"));
 
 //        vSeeds.push_back(CDNSSeedData("68.183.236.217", "68.183.236.217"));
@@ -354,11 +352,10 @@ public:
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nTime = 1582697507;
-        genesis.nNonce = 2465608;
+        genesis.nNonce = 2508318;
 
         hashGenesisBlock = genesis.GetHash();
-        strprintf("hash", hashGenesisBlock);
-        //assert(hashGenesisBlock == uint256("0x0000041e482b9b9691d98eefb48473405c0b8ec31b76df3797c74a78680ef818"));
+        assert(hashGenesisBlock == uint256("0x00000f2465e8625d2c7546b78edbec292663ab2ff0003d39505e0d1d9ac62e79"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -382,7 +379,7 @@ public:
         fAllowMinDifficultyBlocks = true;
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
-        fMineBlocksOnDemand = true;
+        fMineBlocksOnDemand = false;
         fTestnetToBeDeprecatedFieldRPC = true;
 
         nPoolMaxTransactions = 2;
@@ -461,6 +458,7 @@ public:
         genesis.nNonce = 2402015;
 
         hashGenesisBlock = genesis.GetHash();
+        printf("genesis.GetHash = %s\n",hashGenesisBlock.ToString().c_str());
         //assert(hashGenesisBlock == uint256("0x0000041e482b9b9691d98eefb48473405c0b8ec31b76df3797c74a78680ef818"));
         //assert(hashGenesisBlock == uint256("0x4f023a2120d9127b21bbad01724fdb79b519f593f2a85b60d3d79160ec5f29df"));
 
