@@ -67,7 +67,7 @@ static Checkpoints::MapCheckpoints mapCheckpointsTestnet =
     (0, uint256("0x001"));
 static const Checkpoints::CCheckpointData dataTestnet = {
     &mapCheckpointsTestnet,
-    1740710,
+    1582697507,
     0,
     250};
 
@@ -225,11 +225,13 @@ public:
         genesis.hashPrevBlock = 0;
         genesis.hashMerkleRoot = BlockMerkleRoot(genesis);
         genesis.nVersion = 1;
-        genesis.nTime = 1542153600;
+        genesis.nTime = 1582697507;
         genesis.nBits = 0x1e0ffff0;
         genesis.nNonce = 2465608;
 
         hashGenesisBlock = genesis.GetHash();
+        strprintf("HashGEN", hashGenesisBlock);
+        strprintf("Gen", genesis.hashMerkleRoot);
         assert(hashGenesisBlock == uint256("0x00000d628fa6a8e91fe47554fa6ba00c7aa535fccd430b22214a71f9b7b344a7"));
         assert(genesis.hashMerkleRoot == uint256("0xb8ac00f6c7839f841a053c5f63e81015d631b81cc633692aab3858021fb9cab3"));
 
@@ -351,11 +353,11 @@ public:
         nSupplyBeforeFakeSerial = 0;
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
-        genesis.nTime = 1542153600;
+        genesis.nTime = 1582697507;
         genesis.nNonce = 2465608;
-        genesis.nBits = 0x1e0ffff0;
 
         hashGenesisBlock = genesis.GetHash();
+        strprintf("hash", hashGenesisBlock);
         //assert(hashGenesisBlock == uint256("0x0000041e482b9b9691d98eefb48473405c0b8ec31b76df3797c74a78680ef818"));
 
         vFixedSeeds.clear();
@@ -380,7 +382,7 @@ public:
         fAllowMinDifficultyBlocks = true;
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
-        fMineBlocksOnDemand = false;
+        fMineBlocksOnDemand = true;
         fTestnetToBeDeprecatedFieldRPC = true;
 
         nPoolMaxTransactions = 2;
