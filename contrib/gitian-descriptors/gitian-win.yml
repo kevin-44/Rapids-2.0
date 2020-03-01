@@ -24,7 +24,7 @@ packages:
 - "python3"
 - "rename"
 remotes:
-- "url": "https://github.com/pivx-project/pivx.git"
+- "url": "http://github.com/RapidsOfficial/Rapids-2.0"
   "dir": "pivx"
 files: []
 script: |
