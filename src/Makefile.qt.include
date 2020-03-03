@@ -181,8 +181,8 @@ QT_MOC = \
   qt/rpcconsole.moc \
   qt/pivx/settings/moc_settingsconsolewidget.cpp
 
-QT_QRC_CPP = qt/qrc_pivx.cpp
-QT_QRC = qt/pivx.qrc
+QT_QRC_CPP = qt/qrc_rapids.cpp
+QT_QRC = qt/rapids.qrc
 QT_QRC_LOCALE_CPP = qt/qrc_pivx_locale.cpp
 QT_QRC_LOCALE = qt/pivx_locale.qrc
 
