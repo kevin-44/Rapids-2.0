@@ -152,21 +152,21 @@ def build():
         print('\nCompiling ' + args.version + ' Linux')
         subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'pivx='+args.commit, '--url', 'pivx='+args.url, '../pivx/contrib/gitian-descriptors/gitian-linux.yml'])
         subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-linux', '--destination', '../gitian.sigs/', '../pivx/contrib/gitian-descriptors/gitian-linux.yml'])
-        subprocess.check_call('mv build/out/pivx-*.tar.gz build/out/src/pivx-*.tar.gz ../pivx-binaries/'+args.version, shell=True)
+        subprocess.check_call('mv build/out/rapids-*.tar.gz build/out/src/pivx-*.tar.gz ../pivx-binaries/'+args.version, shell=True)
 
     if args.windows:
         print('\nCompiling ' + args.version + ' Windows')
         subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'pivx='+args.commit, '--url', 'pivx='+args.url, '../pivx/contrib/gitian-descriptors/gitian-win.yml'])
         subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-win-unsigned', '--destination', '../gitian.sigs/', '../pivx/contrib/gitian-descriptors/gitian-win.yml'])
-        subprocess.check_call('mv build/out/pivx-*-win-unsigned.tar.gz inputs/', shell=True)
-        subprocess.check_call('mv build/out/pivx-*.zip build/out/pivx-*.exe build/out/src/pivx-*.tar.gz ../pivx-binaries/'+args.version, shell=True)
+        subprocess.check_call('mv build/out/rapids-*-win-unsigned.tar.gz inputs/', shell=True)
+        subprocess.check_call('mv build/out/rapids-*.zip build/out/rapids-*.exe build/out/src/rapids-*.tar.gz ../pivx-binaries/'+args.version, shell=True)
 
     if args.macos:
         print('\nCompiling ' + args.version + ' MacOS')
         subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'pivx='+args.commit, '--url', 'pivx='+args.url, '../pivx/contrib/gitian-descriptors/gitian-osx.yml'])
         subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-osx-unsigned', '--destination', '../gitian.sigs/', '../pivx/contrib/gitian-descriptors/gitian-osx.yml'])
-        subprocess.check_call('mv build/out/pivx-*-osx-unsigned.tar.gz inputs/', shell=True)
-        subprocess.check_call('mv build/out/pivx-*.tar.gz build/out/pivx-*.dmg build/out/src/pivx-*.tar.gz ../pivx-binaries/'+args.version, shell=True)
+        subprocess.check_call('mv build/out/rapids-*-osx-unsigned.tar.gz inputs/', shell=True)
+        subprocess.check_call('mv build/out/rapids-*.tar.gz build/out/rapids-*.dmg build/out/src/rapids-*.tar.gz ../pivx-binaries/'+args.version, shell=True)
 
     os.chdir(workdir)
 
@@ -196,7 +196,7 @@ def sign():
     subprocess.check_call('cp inputs/pivx-' + args.version + '-osx-unsigned.tar.gz inputs/pivx-osx-unsigned.tar.gz', shell=True)
     subprocess.check_call(['bin/gbuild', '--skip-image', '--upgrade', '--commit', 'signature='+args.commit, '../pivx/contrib/gitian-descriptors/gitian-osx-signer.yml'])
     subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-osx-signed', '--destination', '../gitian.sigs/', '../pivx/contrib/gitian-descriptors/gitian-osx-signer.yml'])
-    subprocess.check_call('mv build/out/pivx-osx-signed.dmg ../pivx-binaries/'+args.version+'/pivx-'+args.version+'-osx.dmg', shell=True)
+    subprocess.check_call('mv build/out/rapids-osx-signed.dmg ../pivx-binaries/'+args.version+'/rapids-'+args.version+'-osx.dmg', shell=True)
 
     os.chdir(workdir)
 
