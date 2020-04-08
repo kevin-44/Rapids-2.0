@@ -214,7 +214,7 @@ void PIVXGUI::connectActions() {
 void PIVXGUI::createTrayIcon(const NetworkStyle* networkStyle) {
 #ifndef Q_OS_MAC
     trayIcon = new QSystemTrayIcon(this);
-    QString toolTip = tr("Rapids Core client") + " " + networkStyle->getTitleAddText();
+    QString toolTip = tr("Rapids Core") + " " + networkStyle->getTitleAddText();
     trayIcon->setToolTip(toolTip);
     trayIcon->setIcon(networkStyle->getAppIcon());
     trayIcon->hide();

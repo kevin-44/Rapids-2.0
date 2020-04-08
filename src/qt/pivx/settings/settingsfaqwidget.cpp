@@ -17,7 +17,7 @@ SettingsFaqWidget::SettingsFaqWidget(QWidget *parent) :
     this->setStyleSheet(parent->styleSheet());
 
     ui->labelTitle->setText(tr("Frequently Asked Questions"));
-    ui->labelWebLink->setText(tr("You can read more here"));
+    ui->labelWebLink->setText(tr("You can read more at"));
 #ifdef Q_OS_MAC
     ui->container->load("://bg-welcome");
     setCssProperty(ui->container, "container-welcome-no-image");
@@ -91,7 +91,7 @@ SettingsFaqWidget::SettingsFaqWidget(QWidget *parent) :
     setCssProperty(ui->pushButtonExit, "btn-faq-exit");
 
     // Web Link
-    ui->pushButtonWebLink->setText("https://PIVX.org/");
+    ui->pushButtonWebLink->setText("https://rapidsnetwork.io");
     setCssProperty(ui->pushButtonWebLink, "btn-faq-web");
     setCssProperty(ui->containerButtons, "container-faq-buttons");
 
