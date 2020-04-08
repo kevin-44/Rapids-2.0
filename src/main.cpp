@@ -56,7 +56,7 @@
 
 
 #if defined(NDEBUG)
-#error "PIVX cannot be compiled without assertions."
+#error "Rapids cannot be compiled without assertions."
 #endif
 
 /**
@@ -6028,15 +6028,15 @@ bool static ProcessMessage(CNode* pfrom, std::string strCommand, CDataStream& vR
         int64_t nTimeOffset = nTime - GetTime();
         pfrom->nTimeOffset = nTimeOffset;
         const int nTimeSlotLength = Params().TimeSlotLength();
-        if (abs64(nTimeOffset) < 2 * nTimeSlotLength) {
+        //if (abs64(nTimeOffset) < 2 * nTimeSlotLength) {
             pfrom->fSuccessfullyConnected = true;
             AddTimeData(pfrom->addr, nTimeOffset, nTimeSlotLength);
-        } else {
+        /*} else {
             LogPrintf("timeOffset (%d seconds) too large. Disconnecting node %s\n",
                       nTimeOffset, pfrom->addr.ToString().c_str());
             pfrom->fDisconnect = true;
             CheckOffsetDisconnectedPeers(pfrom->addr);
-        }
+        }*/ // temp change
     }
 
 
