@@ -216,7 +216,7 @@ void PIVXGUI::createTrayIcon(const NetworkStyle* networkStyle) {
     trayIcon = new QSystemTrayIcon(this);
     QString toolTip = tr("Rapids Core") + " " + networkStyle->getTitleAddText();
     trayIcon->setToolTip(toolTip);
-    if (getAppName() == "main") {
+    if (networkStyle->getAppName() == "main") {
         trayIcon->setIcon(networkStyle->getAppIcon());
     }
     else {
