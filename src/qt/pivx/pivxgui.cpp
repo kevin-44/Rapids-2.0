@@ -220,7 +220,7 @@ void PIVXGUI::createTrayIcon(const NetworkStyle* networkStyle) {
         trayIcon->setIcon(networkStyle->getAppIcon());
     }
     else {
-        trayIcon->setIcon(":/icons/bitcoin_inverted");
+        trayIcon->setIcon(QString(":/icons/bitcoin_inverted"));
     }
     trayIcon->hide();
 #endif
