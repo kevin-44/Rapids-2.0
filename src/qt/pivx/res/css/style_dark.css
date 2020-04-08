@@ -399,12 +399,12 @@ HH       TOP BAR
 HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH*/
 
 *[cssClass="container-top"] {
-    background-color:#1A1A1A;
+    background-color:#000000;
     border-image: url("://bg-dashboard-banner") 0 0 0 0 stretch stretch;
 }
 
 *[cssClass="container-topbar-no-image"] {
-    background-color:#1A1A1A;
+    background-color:#000000;
 }
 
 *[cssClass="text-title-topbar"] {
@@ -2752,12 +2752,12 @@ QPushButton[cssClass="ic-step-confirm-welcome"] {
 
 
 *[cssClass="container-welcome"] {
-    background-color: #1A1A1A;
+    background-color: #000000;
     border-image: url("://bg-welcome") 0 0 0 0 stretch stretch;
 }
 
 *[cssClass="container-welcome-no-image"] {
-    background-color:#1A1A1A;
+    background-color:#000000;
 }
 
 *[cssClass="container-welcome-box"] {
