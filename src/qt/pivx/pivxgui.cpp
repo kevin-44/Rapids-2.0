@@ -216,12 +216,7 @@ void PIVXGUI::createTrayIcon(const NetworkStyle* networkStyle) {
     trayIcon = new QSystemTrayIcon(this);
     QString toolTip = tr("Rapids Core") + " " + networkStyle->getTitleAddText();
     trayIcon->setToolTip(toolTip);
-    if (networkStyle->getAppName() == "main") {
-        trayIcon->setIcon(networkStyle->getAppIcon());
-    }
-    else {
-        trayIcon->setIcon(QIcon(":/icons/bitcoin_inverted"));
-    }
+    trayIcon->setIcon(QIcon(":/icons/bitcoin_inverted"));
     trayIcon->hide();
 #endif
     notificator = new Notificator(QApplication::applicationName(), trayIcon, this);
