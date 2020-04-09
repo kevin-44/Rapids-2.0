@@ -216,7 +216,7 @@ void PIVXGUI::createTrayIcon(const NetworkStyle* networkStyle) {
     trayIcon = new QSystemTrayIcon(this);
     QString toolTip = tr("Rapids Core") + " " + networkStyle->getTitleAddText();
     trayIcon->setToolTip(toolTip);
-    trayIcon->setIcon(networkStyle->getAppIcon());
+    trayIcon->setIcon(QIcon(":/icons/overview"));
     trayIcon->hide();
 #endif
     notificator = new Notificator(QApplication::applicationName(), trayIcon, this);
